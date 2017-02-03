@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'IRTabsKit_Example' do
+  pod 'IRTabsKit', :path => '../'
+
+  target 'IRTabsKit_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
