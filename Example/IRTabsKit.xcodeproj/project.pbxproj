@@ -24,6 +24,7 @@
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		99D2C4BC07F75A7F06A95705 /* Pods_IRTabsKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19305DFA0222A249FF6FC6FD /* Pods_IRTabsKit_Example.framework */; };
 		A451094FEE1C56A102E3E9E0 /* Pods_IRTabsKit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4536DFE8EB5E9FE6D22697 /* Pods_IRTabsKit_Tests.framework */; };
+		D3EE97861E45D696009B3382 /* IRHomeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +39,7 @@
 
 /* Begin PBXFileReference section */
 		19305DFA0222A249FF6FC6FD /* Pods_IRTabsKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IRTabsKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		418833950D4D7C69F4331058 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		418833950D4D7C69F4331058 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		471D8BBAD1EB145CF107B7DA /* Pods-IRTabsKit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Example/Pods-IRTabsKit_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* IRTabsKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IRTabsKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -62,11 +63,13 @@
 		6D1F5C4CAD73D6089BF828B7 /* Pods-IRTabsKit_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Tests/Pods-IRTabsKit_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		94AC77A1AF41E5AFD00935FE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		94AC77A1AF41E5AFD00935FE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		9C0F3EAD115AE622F5F51973 /* Pods-IRTabsKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Tests/Pods-IRTabsKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		C3360BFD51F44A4D0A3CF68D /* Pods-IRTabsKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Example/Pods-IRTabsKit_Example.release.xcconfig"; sourceTree = "<group>"; };
+		D3EE97841E45D696009B3382 /* IRHomeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRHomeTableViewController.h; sourceTree = "<group>"; };
+		D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRHomeTableViewController.m; sourceTree = "<group>"; };
 		DD4536DFE8EB5E9FE6D22697 /* Pods_IRTabsKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IRTabsKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E3D45C0E84D9D3CD1E476360 /* IRTabsKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = IRTabsKit.podspec; path = ../IRTabsKit.podspec; sourceTree = "<group>"; };
+		E3D45C0E84D9D3CD1E476360 /* IRTabsKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = IRTabsKit.podspec; path = ../IRTabsKit.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,13 +135,15 @@
 		6003F593195388D20070C39A /* Example for IRTabsKit */ = {
 			isa = PBXGroup;
 			children = (
+				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F59C195388D20070C39A /* IRAppDelegate.h */,
 				6003F59D195388D20070C39A /* IRAppDelegate.m */,
-				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
+				D3EE97841E45D696009B3382 /* IRHomeTableViewController.h */,
+				D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */,
 				6003F5A5195388D20070C39A /* IRViewController.h */,
 				6003F5A6195388D20070C39A /* IRViewController.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
-				6003F5A8195388D20070C39A /* Images.xcassets */,
+				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F594195388D20070C39A /* Supporting Files */,
 			);
 			name = "Example for IRTabsKit";
@@ -248,8 +253,11 @@
 			attributes = {
 				CLASSPREFIX = IR;
 				LastUpgradeCheck = 0720;
-				ORGANIZATIONNAME = Alex009;
+				ORGANIZATIONNAME = "IceRock Development";
 				TargetAttributes = {
+					6003F589195388D20070C39A = {
+						DevelopmentTeam = JHA8M3FGT2;
+					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -395,6 +403,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* IRAppDelegate.m in Sources */,
+				D3EE97861E45D696009B3382 /* IRHomeTableViewController.m in Sources */,
 				6003F5A7195388D20070C39A /* IRViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
@@ -524,6 +533,7 @@
 			baseConfigurationReference = 471D8BBAD1EB145CF107B7DA /* Pods-IRTabsKit_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = JHA8M3FGT2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IRTabsKit/IRTabsKit-Prefix.pch";
 				INFOPLIST_FILE = "IRTabsKit/IRTabsKit-Info.plist";
@@ -539,6 +549,7 @@
 			baseConfigurationReference = C3360BFD51F44A4D0A3CF68D /* Pods-IRTabsKit_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = JHA8M3FGT2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IRTabsKit/IRTabsKit-Prefix.pch";
 				INFOPLIST_FILE = "IRTabsKit/IRTabsKit-Info.plist";
