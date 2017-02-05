@@ -9,6 +9,7 @@
 #import "IRSwipeTabsController.h"
 #import "IRTabsViewController.h"
 #import "IRTabsContainerView.h"
+#import "IRTabsView.h"
 
 double kDefaultTransitionDuration = 0.35;
 
@@ -39,7 +40,7 @@ double kDefaultTransitionDuration = 0.35;
   tabsContainerView.showsHorizontalScrollIndicator = false;
   tabsContainerView.scrollsToTop = false;
   tabsContainerView.bounces = false;
-  tabsContainerView.delegate = self;
+  tabsContainerView.tabsContainerDelegate = self;
 
   [self addSwipeGestureRecognizerWithDirection:UISwipeGestureRecognizerDirectionRight
                                         toView:tabsContainerView];
@@ -60,6 +61,10 @@ double kDefaultTransitionDuration = 0.35;
 
     self.currentTabViewController = pageViewController;
   }
+
+  IRTabsView *tabsView = tabsViewController.tabsView;
+
+  [tabsView populateWithViewControllers:tabsViewController.viewControllers];
 }
 
 - (void)swipeGesture:(UISwipeGestureRecognizer *)swipeGestureRecognizer {

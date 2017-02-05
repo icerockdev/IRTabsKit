@@ -19,8 +19,6 @@
 
 @interface IRTabsContainerView : UIScrollView
 
-@property NSUInteger tabsCount;
-
-@property(nonatomic, weak) id <IRTabsContainerViewDelegate> delegate;
+@property(nonatomic, weak) id <IRTabsContainerViewDelegate> tabsContainerDelegate;
 
 @end

@@ -47,7 +47,7 @@
 
 - (void)addTabViewController:(UIViewController *)viewController {
   NSMutableArray<UIViewController *> *updatedViewControllers = [NSMutableArray arrayWithArray:self.viewControllers];
-  [updatedViewControllers addObject:self.viewController];
+  [updatedViewControllers addObject:viewController];
 
   self.viewControllers = [NSArray arrayWithArray:updatedViewControllers];
 }

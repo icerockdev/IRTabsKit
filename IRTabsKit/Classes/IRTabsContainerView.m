@@ -25,14 +25,14 @@
 - (void)setBounds:(CGRect)bounds {
   CGRect oldBounds = self.bounds;
 
-  if ([self.delegate respondsToSelector:@selector(tabsContainerViewBoundsWillChangeFrom:to:)]) {
-    [self.delegate tabsContainerViewBoundsWillChangeFrom:oldBounds to:bounds];
+  if ([self.tabsContainerDelegate respondsToSelector:@selector(tabsContainerViewBoundsWillChangeFrom:to:)]) {
+    [self.tabsContainerDelegate tabsContainerViewBoundsWillChangeFrom:oldBounds to:bounds];
   }
 
   [super setBounds:bounds];
 
-  if ([self.delegate respondsToSelector:@selector(tabsContainerViewBoundsDidChangeFrom:to:)]) {
-    [self.delegate tabsContainerViewBoundsDidChangeFrom:oldBounds to:bounds];
+  if ([self.tabsContainerDelegate respondsToSelector:@selector(tabsContainerViewBoundsDidChangeFrom:to:)]) {
+    [self.tabsContainerDelegate tabsContainerViewBoundsDidChangeFrom:oldBounds to:bounds];
   }
 }
 
