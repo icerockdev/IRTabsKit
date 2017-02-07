@@ -17,6 +17,7 @@ double kDefaultTransitionDuration = 0.35;
 
 @property(weak) IRTabsViewController *tabsViewController;
 @property UIViewController *currentTabViewController;
+@property bool transitionInProgress;
 
 @end
 
@@ -65,6 +66,11 @@ double kDefaultTransitionDuration = 0.35;
   IRTabsView *tabsView = tabsViewController.tabsView;
 
   [tabsView populateWithViewControllers:tabsViewController.viewControllers];
+  [tabsView setTabsController:self];
+}
+
+- (void)tabSelected:(NSUInteger)tabIndex {
+  [self setCurrentTab:tabIndex];
 }
 
 - (void)swipeGesture:(UISwipeGestureRecognizer *)swipeGestureRecognizer {
@@ -106,6 +112,12 @@ double kDefaultTransitionDuration = 0.35;
 }
 
 - (void)setCurrentTab:(NSUInteger)tabIdx {
+  if(self.transitionInProgress) {
+    return;
+  }
+
+  self.transitionInProgress = true;
+
   UIViewController *pageViewController = self.tabsViewController.viewControllers[tabIdx];
 
   [self.currentTabViewController willMoveToParentViewController:nil];
@@ -120,13 +132,15 @@ double kDefaultTransitionDuration = 0.35;
                                                duration:[self.transitionDuration doubleValue]
                                                 options:UIViewAnimationOptionTransitionCrossDissolve
                                              animations:^() {
-
+                                                 [self.tabsViewController.tabsView setSelectedTab:tabIdx];
                                              }
                                              completion:^(BOOL finished) {
                                                  [self.currentTabViewController removeFromParentViewController];
                                                  [pageViewController didMoveToParentViewController:self.tabsViewController];
 
                                                  self.currentTabViewController = pageViewController;
+
+                                                 self.transitionInProgress = false;
                                              }];
 }
 

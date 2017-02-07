@@ -13,5 +13,6 @@
 @protocol IRTabsController <NSObject>
 
 - (void)viewDidLoad:(IRTabsViewController *)tabsViewController;
+- (void)tabSelected:(NSUInteger)tabIndex;
 
 @end

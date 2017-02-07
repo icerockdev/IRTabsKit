@@ -8,25 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol IRTabsViewDelegate
+@protocol IRTabsController;
+
+@protocol IRTabsViewDelegate<NSObject>
 
 - (UIView *)createTabViewWithViewController:(UIViewController *)viewController;
-
-@end
-
-@protocol IRTabViewProtocol
-
-@property IBOutlet UILabel *titleLabel;
+- (UIView *)createSelectedIndicatorView;
 
 @end
 
 IB_DESIGNABLE
 @interface IRTabsView : UIView
 
+@property IBInspectable NSString *selectedIndicatorNibFile;
 @property IBInspectable NSString *tabNibFile;
 
-@property NSUInteger selectedTab;
-@property IBOutlet id <IRTabsViewDelegate> delegate;
+@property (nonatomic) NSUInteger selectedTab;
+@property (weak) IBOutlet id <IRTabsViewDelegate> delegate;
+@property (weak) id<IRTabsController> tabsController;
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers;
 

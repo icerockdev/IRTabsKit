@@ -25,6 +25,7 @@
 		99D2C4BC07F75A7F06A95705 /* Pods_IRTabsKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19305DFA0222A249FF6FC6FD /* Pods_IRTabsKit_Example.framework */; };
 		A451094FEE1C56A102E3E9E0 /* Pods_IRTabsKit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4536DFE8EB5E9FE6D22697 /* Pods_IRTabsKit_Tests.framework */; };
 		D3EE97861E45D696009B3382 /* IRHomeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */; };
+		D3FC31881E49902B0066707A /* SelectedIndicatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3FC31871E49902B0066707A /* SelectedIndicatorView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		C3360BFD51F44A4D0A3CF68D /* Pods-IRTabsKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Example/Pods-IRTabsKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		D3EE97841E45D696009B3382 /* IRHomeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRHomeTableViewController.h; sourceTree = "<group>"; };
 		D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRHomeTableViewController.m; sourceTree = "<group>"; };
+		D3FC31871E49902B0066707A /* SelectedIndicatorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectedIndicatorView.xib; sourceTree = "<group>"; };
 		DD4536DFE8EB5E9FE6D22697 /* Pods_IRTabsKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IRTabsKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3D45C0E84D9D3CD1E476360 /* IRTabsKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = IRTabsKit.podspec; path = ../IRTabsKit.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -145,6 +147,7 @@
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F594195388D20070C39A /* Supporting Files */,
+				D3FC31871E49902B0066707A /* SelectedIndicatorView.xib */,
 			);
 			name = "Example for IRTabsKit";
 			path = IRTabsKit;
@@ -291,6 +294,7 @@
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
+				D3FC31881E49902B0066707A /* SelectedIndicatorView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
