@@ -13,7 +13,7 @@
 
 double kDefaultTransitionDuration = 0.35;
 
-@interface IRSwipeTabsController () <IRTabsContainerViewDelegate>
+@interface IRSwipeTabsController ()
 
 @property(weak) IRTabsViewController *tabsViewController;
 @property UIViewController *currentTabViewController;
@@ -37,11 +37,8 @@ double kDefaultTransitionDuration = 0.35;
   IRTabsContainerView *tabsContainerView = tabsViewController.tabsContainerView;
 
   tabsContainerView.scrollEnabled = false;
-  tabsContainerView.showsVerticalScrollIndicator = false;
-  tabsContainerView.showsHorizontalScrollIndicator = false;
   tabsContainerView.scrollsToTop = false;
   tabsContainerView.bounces = false;
-  tabsContainerView.tabsContainerDelegate = self;
 
   [self addSwipeGestureRecognizerWithDirection:UISwipeGestureRecognizerDirectionRight
                                         toView:tabsContainerView];
@@ -152,15 +149,6 @@ double kDefaultTransitionDuration = 0.35;
   swipeGestureRecognizer.direction = direction;
 
   [view addGestureRecognizer:swipeGestureRecognizer];
-}
-
-- (void)tabsContainerViewBoundsDidChangeFrom:(CGRect)fromBounds
-                                          to:(CGRect)toBounds {
-  if (self.currentTabViewController == nil) {
-    return;
-  }
-
-  self.currentTabViewController.view.frame = toBounds;
 }
 
 @end

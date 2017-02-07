@@ -10,29 +10,36 @@
 
 @implementation IRTabsContainerView
 
-- (instancetype)init {
-  self = [super init];
-  if (self) {
+- (id)awakeAfterUsingCoder:(NSCoder *)aDecoder {
+  self.showsVerticalScrollIndicator = false;
+  self.showsHorizontalScrollIndicator = false;
 
-  }
-  return self;
+  return [super awakeAfterUsingCoder:aDecoder];
+}
+
+- (void)awakeFromNib {
+  self.showsVerticalScrollIndicator = false;
+  self.showsHorizontalScrollIndicator = false;
+
+  [super awakeFromNib];
 }
 
 - (void)layoutSubviews {
-  [super layoutSubviews];
-}
+  NSUInteger pagesCount = self.subviews.count;
+  CGSize selfSize = self.bounds.size;
+  CGSize newSize = CGSizeMake(selfSize.width * pagesCount, selfSize.height);
+  CGSize oldSize = self.contentSize;
+  CGPoint oldOffset = self.contentOffset;
 
-- (void)setBounds:(CGRect)bounds {
-  CGRect oldBounds = self.bounds;
+  [self setContentSize:newSize];
 
-  if ([self.tabsContainerDelegate respondsToSelector:@selector(tabsContainerViewBoundsWillChangeFrom:to:)]) {
-    [self.tabsContainerDelegate tabsContainerViewBoundsWillChangeFrom:oldBounds to:bounds];
+  if(newSize.width != oldSize.width) {
+    NSUInteger page = (NSUInteger) ceil(oldOffset.x / (oldSize.width / self.subviews.count));
+    [self setContentOffset:CGPointMake(selfSize.width * page, self.contentInset.top)];
   }
 
-  [super setBounds:bounds];
-
-  if ([self.tabsContainerDelegate respondsToSelector:@selector(tabsContainerViewBoundsDidChangeFrom:to:)]) {
-    [self.tabsContainerDelegate tabsContainerViewBoundsDidChangeFrom:oldBounds to:bounds];
+  for(NSUInteger i = 0;i < pagesCount;i++) {
+    [self.subviews[i] setFrame:CGRectMake(selfSize.width * i, 0.0f, selfSize.width, selfSize.height)];
   }
 }
 

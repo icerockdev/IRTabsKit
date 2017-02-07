@@ -28,5 +28,6 @@ IB_DESIGNABLE
 @property (weak) id<IRTabsController> tabsController;
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers;
+- (void)setSelectedIndicatorPosition:(CGFloat)selectedIndicatorPosition;
 
 @end

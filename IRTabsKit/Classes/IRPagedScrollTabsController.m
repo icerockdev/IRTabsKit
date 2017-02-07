@@ -11,9 +11,10 @@
 #import "IRTabsViewController.h"
 #import "IRTabsView.h"
 
-@interface IRPagedScrollTabsController()
+@interface IRPagedScrollTabsController() <UIScrollViewDelegate>
 
 @property (nonatomic, weak) IRTabsContainerView *tabsContainerView;
+@property (nonatomic, weak) IRTabsView *tabsView;
 
 @end
 
@@ -23,12 +24,10 @@
   IRTabsContainerView *tabsContainerView = tabsViewController.tabsContainerView;
   NSArray<UIViewController *> *viewControllers = tabsViewController.viewControllers;
 
-  tabsContainerView.showsVerticalScrollIndicator = false;
-  tabsContainerView.showsHorizontalScrollIndicator = false;
   tabsContainerView.bounces = false;
   tabsContainerView.pagingEnabled = true;
-
-  UIView *lastView = nil;
+  tabsContainerView.canCancelContentTouches = false;
+  tabsContainerView.delegate = self;
 
   // remove subviews
   while (tabsContainerView.subviews.count > 0) {
@@ -37,69 +36,34 @@
 
   // add pages
   for (NSUInteger i = 0; i < viewControllers.count;i++) {
-    UIView* view = viewControllers[i].view;
-    view.translatesAutoresizingMaskIntoConstraints = false;
+    UIViewController *viewController = viewControllers[i];
+    UIView* view = viewController.view;
+
+    [tabsViewController addChildViewController:viewController];
 
     [tabsContainerView addSubview:view];
 
-    [tabsContainerView addConstraint:[NSLayoutConstraint constraintWithItem:tabsContainerView
-                                                                  attribute:NSLayoutAttributeWidth
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:view
-                                                                  attribute:NSLayoutAttributeWidth
-                                                                 multiplier:1.0f
-                                                                   constant:0]];
-
-    [tabsContainerView addConstraint:[NSLayoutConstraint constraintWithItem:tabsContainerView
-                                                                  attribute:NSLayoutAttributeHeight
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:view
-                                                                  attribute:NSLayoutAttributeHeight
-                                                                 multiplier:1.0f
-                                                                   constant:0]];
-
-    [tabsContainerView addConstraint:[NSLayoutConstraint constraintWithItem:tabsContainerView
-                                                                  attribute:NSLayoutAttributeCenterY
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:view
-                                                                  attribute:NSLayoutAttributeCenterY
-                                                                 multiplier:1.0f
-                                                                   constant:0]];
-
-    [tabsContainerView addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                                  attribute:NSLayoutAttributeLeading
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:(lastView == nil ?
-                                                                         tabsContainerView :
-                                                                         lastView)
-                                                                  attribute:(lastView == nil ?
-                                                                      NSLayoutAttributeLeading :
-                                                                      NSLayoutAttributeTrailing)
-                                                                 multiplier:1.0f
-                                                                   constant:0]];
-
-    lastView = view;
-  }
-
-  if(lastView != nil) {
-    [tabsContainerView addConstraint:[NSLayoutConstraint constraintWithItem:lastView
-                                                                  attribute:NSLayoutAttributeTrailing
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:tabsContainerView
-                                                                  attribute:NSLayoutAttributeTrailing
-                                                                 multiplier:1.0f
-                                                                   constant:0]];
+    [viewController didMoveToParentViewController:tabsViewController];
   }
 
   [tabsViewController.tabsView populateWithViewControllers:viewControllers];
   [tabsViewController.tabsView setTabsController:self];
 
   self.tabsContainerView = tabsContainerView;
+  self.tabsView = tabsViewController.tabsView;
 }
 
 - (void)tabSelected:(NSUInteger)tabIndex {
-  [self.tabsContainerView setContentOffset:CGPointMake(self.tabsContainerView.bounds.size.width * tabIndex, 0)
+  [self.tabsContainerView setContentOffset:CGPointMake(self.tabsContainerView.bounds.size.width * tabIndex,
+          self.tabsContainerView.contentInset.top)
                                   animated:true];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+  CGPoint offset = scrollView.contentOffset;
+  CGSize size = scrollView.bounds.size;
+
+  [self.tabsView setSelectedIndicatorPosition:(offset.x / size.width)];
 }
 
 @end

@@ -8,17 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol IRTabsContainerViewDelegate <NSObject>
-
-@optional
-- (void)tabsContainerViewBoundsWillChangeFrom:(CGRect)fromBounds to:(CGRect)toBounds;
-
-- (void)tabsContainerViewBoundsDidChangeFrom:(CGRect)fromBounds to:(CGRect)toBounds;
-
-@end
-
 @interface IRTabsContainerView : UIScrollView
-
-@property(nonatomic, weak) id <IRTabsContainerViewDelegate> tabsContainerDelegate;
 
 @end

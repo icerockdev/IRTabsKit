@@ -19,6 +19,7 @@
 
 @end
 
+// FIXME: change to manual layout (unnecessary autolayout constraints hell)
 @implementation IRTabsView
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers {
@@ -170,9 +171,9 @@
   return viewController.title;
 }
 
-- (NSLayoutConstraint*) indicatorHorizontalPositionConstraintWithSelectedIndex:(NSUInteger)selectedIndex {
+- (NSLayoutConstraint*) indicatorHorizontalPositionConstraintWithPosition:(CGFloat)position {
   CGFloat tabWidthMultiplier = 2.0f / self.tabViews.count;
-  CGFloat multiplier = tabWidthMultiplier * selectedIndex + (tabWidthMultiplier / 2.0f);
+  CGFloat multiplier = tabWidthMultiplier * position + (tabWidthMultiplier / 2.0f);
   return [NSLayoutConstraint constraintWithItem:self.selectedIndicatorView
                                       attribute:NSLayoutAttributeCenterX
                                       relatedBy:NSLayoutRelationEqual
@@ -185,12 +186,17 @@
 - (void)setSelectedTab:(NSUInteger)selectedTab {
   _selectedTab = selectedTab;
 
+  [self setSelectedIndicatorPosition:selectedTab];
+}
+
+- (void)setSelectedIndicatorPosition:(CGFloat)selectedIndicatorPosition {
+
   if(self.selectedIndicatorHorizontalPositionConstraint != nil) {
     [self removeConstraint:self.selectedIndicatorHorizontalPositionConstraint];
   }
 
   self.selectedIndicatorHorizontalPositionConstraint =
-      [self indicatorHorizontalPositionConstraintWithSelectedIndex:selectedTab];
+      [self indicatorHorizontalPositionConstraintWithPosition:selectedIndicatorPosition];
 
   [self addConstraint:self.selectedIndicatorHorizontalPositionConstraint];
 
