@@ -17,7 +17,6 @@ double kDefaultTransitionDuration = 0.35;
 
 @property(weak) IRTabsViewController *tabsViewController;
 @property UIViewController *currentTabViewController;
-@property bool transitionInProgress;
 
 @end
 
@@ -27,6 +26,7 @@ double kDefaultTransitionDuration = 0.35;
   self = [super init];
   if (self) {
     self.transitionDuration = @(kDefaultTransitionDuration);
+    self.infinite = @(false);
   }
   return self;
 }
@@ -88,6 +88,9 @@ double kDefaultTransitionDuration = 0.35;
     case UISwipeGestureRecognizerDirectionRight: {
       NSUInteger newIdx;
       if (currentIdx == 0) {
+        if(!self.infinite.boolValue) {
+          break;
+        }
         newIdx = viewControllers.count - 1;
       } else {
         newIdx = currentIdx - 1;
@@ -98,6 +101,9 @@ double kDefaultTransitionDuration = 0.35;
     case UISwipeGestureRecognizerDirectionLeft: {
       NSUInteger newIdx = currentIdx + 1;
       if (newIdx == viewControllers.count) {
+        if(!self.infinite.boolValue) {
+          break;
+        }
         newIdx = 0;
       }
       [self setCurrentTab:newIdx];
@@ -109,12 +115,6 @@ double kDefaultTransitionDuration = 0.35;
 }
 
 - (void)setCurrentTab:(NSUInteger)tabIdx {
-  if(self.transitionInProgress) {
-    return;
-  }
-
-  self.transitionInProgress = true;
-
   UIViewController *pageViewController = self.tabsViewController.viewControllers[tabIdx];
 
   [self.currentTabViewController willMoveToParentViewController:nil];
@@ -130,14 +130,13 @@ double kDefaultTransitionDuration = 0.35;
                                                 options:UIViewAnimationOptionTransitionCrossDissolve
                                              animations:^() {
                                                  [self.tabsViewController.tabsView setSelectedTab:tabIdx];
+                                                 [self.tabsViewController.tabsView layoutIfNeeded];
                                              }
                                              completion:^(BOOL finished) {
                                                  [self.currentTabViewController removeFromParentViewController];
                                                  [pageViewController didMoveToParentViewController:self.tabsViewController];
 
                                                  self.currentTabViewController = pageViewController;
-
-                                                 self.transitionInProgress = false;
                                              }];
 }
 

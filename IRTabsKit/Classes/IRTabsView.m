@@ -13,18 +13,13 @@
 
 @interface IRTabsView ()
 
-@property(nonatomic) NSArray<UIView *> *tabViews;
 @property(nonatomic, weak) UIView *selectedIndicatorView;
-@property(nonatomic, weak) NSLayoutConstraint *selectedIndicatorHorizontalPositionConstraint;
 
 @end
 
-// FIXME: change to manual layout (unnecessary autolayout constraints hell)
 @implementation IRTabsView
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers {
-  UIView *lastView = nil;
-
   // remove subviews
   while (self.subviews.count > 0) {
     [self.subviews[0] removeFromSuperview];
@@ -34,7 +29,6 @@
 
   for (NSUInteger i = 0; i < viewControllers.count; i++) {
     UIView *view = [self createViewForTabWithViewController:viewControllers[i]];
-    view.translatesAutoresizingMaskIntoConstraints = false;
     view.tag = i;
 
     UITapGestureRecognizer *tapGestureRecognizer =
@@ -45,56 +39,9 @@
     tabViews[i] = view;
 
     [self addSubview:view];
-
-    // constraints
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                     attribute:NSLayoutAttributeTopMargin
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeTopMargin
-                                                    multiplier:1.0
-                                                      constant:0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                     attribute:NSLayoutAttributeBottomMargin
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeBottomMargin
-                                                    multiplier:1.0
-                                                      constant:0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                     attribute:NSLayoutAttributeLeadingMargin
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:(lastView == nil ? self : lastView)
-                                                     attribute:(lastView == nil ?
-                                                         NSLayoutAttributeLeadingMargin :
-                                                         NSLayoutAttributeTrailingMargin)
-                                                    multiplier:1.0
-                                                      constant:0]];
-
-    if (lastView != nil) {
-      [self addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                       attribute:NSLayoutAttributeWidth
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:lastView
-                                                       attribute:NSLayoutAttributeWidth
-                                                      multiplier:1.0
-                                                        constant:0]];
-    }
-
-    lastView = view;
   }
 
-  if (lastView != nil) {
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:lastView
-                                                     attribute:NSLayoutAttributeTrailingMargin
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeTrailingMargin
-                                                    multiplier:1.0
-                                                      constant:0]];
-  }
-
-  self.tabViews = [NSArray arrayWithArray:tabViews];
+  _tabViews = [NSArray arrayWithArray:tabViews];
 
   if (self.selectedIndicatorView == nil) {
     if (self.selectedIndicatorNibFile != nil) {
@@ -102,7 +49,6 @@
       [[UINib nibWithNibName:self.selectedIndicatorNibFile
                       bundle:nil] instantiateWithOwner:viewOwner
                                                options:nil];
-      viewOwner.view.translatesAutoresizingMaskIntoConstraints = false;
 
       self.selectedIndicatorView = viewOwner.view;
     } if(self.delegate != nil &&
@@ -111,35 +57,9 @@
     }
   }
 
-  if (self.selectedIndicatorView != nil && lastView != nil) {
+  if (self.selectedIndicatorView != nil) {
     [self addSubview:self.selectedIndicatorView];
-
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:lastView
-                                                     attribute:NSLayoutAttributeWidth
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self.selectedIndicatorView
-                                                     attribute:NSLayoutAttributeWidth
-                                                    multiplier:1.0
-                                                      constant:0]];
-
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:lastView
-                                                     attribute:NSLayoutAttributeBottomMargin
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self.selectedIndicatorView
-                                                     attribute:NSLayoutAttributeBottomMargin
-                                                    multiplier:1.0
-                                                      constant:0]];
-
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:lastView
-                                                     attribute:NSLayoutAttributeTopMargin
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self.selectedIndicatorView
-                                                     attribute:NSLayoutAttributeTopMargin
-                                                    multiplier:1.0
-                                                      constant:0]];
   }
-
-  [self setSelectedTab:self.selectedTab];
 }
 
 - (void)tabPressed:(UITapGestureRecognizer*)tapGestureRecognizer {
@@ -171,37 +91,34 @@
   return viewController.title;
 }
 
-- (NSLayoutConstraint*) indicatorHorizontalPositionConstraintWithPosition:(CGFloat)position {
-  CGFloat tabWidthMultiplier = 2.0f / self.tabViews.count;
-  CGFloat multiplier = tabWidthMultiplier * position + (tabWidthMultiplier / 2.0f);
-  return [NSLayoutConstraint constraintWithItem:self.selectedIndicatorView
-                                      attribute:NSLayoutAttributeCenterX
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self
-                                      attribute:NSLayoutAttributeCenterX
-                                     multiplier:multiplier
-                                       constant:0];
-}
-
 - (void)setSelectedTab:(NSUInteger)selectedTab {
-  _selectedTab = selectedTab;
-
   [self setSelectedIndicatorPosition:selectedTab];
 }
 
+- (NSUInteger)selectedTab {
+  return (NSUInteger) ceil(self.selectedIndicatorPosition);
+}
+
 - (void)setSelectedIndicatorPosition:(CGFloat)selectedIndicatorPosition {
-
-  if(self.selectedIndicatorHorizontalPositionConstraint != nil) {
-    [self removeConstraint:self.selectedIndicatorHorizontalPositionConstraint];
-  }
-
-  self.selectedIndicatorHorizontalPositionConstraint =
-      [self indicatorHorizontalPositionConstraintWithPosition:selectedIndicatorPosition];
-
-  [self addConstraint:self.selectedIndicatorHorizontalPositionConstraint];
+  _selectedIndicatorPosition = selectedIndicatorPosition;
 
   [self setNeedsLayout];
-  [self layoutIfNeeded];
+}
+
+- (void)layoutSubviews {
+  NSArray<UIView*>* tabViews = self.tabViews;
+  CGSize selfSize = self.bounds.size;
+  CGSize tabSize = CGSizeMake(selfSize.width / tabViews.count, selfSize.height);
+
+  for(NSUInteger i = 0;i < tabViews.count;i++) {
+    UIView* tabView = tabViews[i];
+
+    [tabView setFrame:CGRectMake(tabSize.width * i, 0,
+        tabSize.width, tabSize.height)];
+  }
+
+  [self.selectedIndicatorView setFrame:CGRectMake(tabSize.width * self.selectedIndicatorPosition, 0,
+      tabSize.width, tabSize.height)];
 }
 
 @end

@@ -13,5 +13,6 @@ IB_DESIGNABLE
 @interface IRSwipeTabsController : NSObject <IRTabsController>
 
 @property IBInspectable NSNumber *transitionDuration;
+@property IBInspectable NSNumber *infinite;
 
 @end

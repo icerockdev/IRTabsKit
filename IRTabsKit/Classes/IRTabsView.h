@@ -10,9 +10,10 @@
 
 @protocol IRTabsController;
 
-@protocol IRTabsViewDelegate<NSObject>
+@protocol IRTabsViewDelegate <NSObject>
 
 - (UIView *)createTabViewWithViewController:(UIViewController *)viewController;
+
 - (UIView *)createSelectedIndicatorView;
 
 @end
@@ -23,11 +24,12 @@ IB_DESIGNABLE
 @property IBInspectable NSString *selectedIndicatorNibFile;
 @property IBInspectable NSString *tabNibFile;
 
-@property (nonatomic) NSUInteger selectedTab;
-@property (weak) IBOutlet id <IRTabsViewDelegate> delegate;
-@property (weak) id<IRTabsController> tabsController;
+@property(nonatomic, readonly) NSArray<UIView *> *tabViews;
+@property(nonatomic) NSUInteger selectedTab;
+@property(nonatomic) CGFloat selectedIndicatorPosition;
+@property(weak) IBOutlet id <IRTabsViewDelegate> delegate;
+@property(weak) id <IRTabsController> tabsController;
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers;
-- (void)setSelectedIndicatorPosition:(CGFloat)selectedIndicatorPosition;
 
 @end
