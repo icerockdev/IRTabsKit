@@ -74,7 +74,10 @@
                     bundle:nil] instantiateWithOwner:viewOwner
                                              options:nil];
 
-    viewOwner.titleLabel.text = [self tabTitleWithViewController:viewController];
+    NSString* title = [self tabTitleWithViewController:viewController];
+    [viewOwner.titleLabel setText:title];
+    [viewOwner.titleButton setTitle:title
+                           forState:UIControlStateNormal];
 
     return viewOwner.view;
   } else if (self.delegate != nil && [self.delegate respondsToSelector:@selector(createSelectedIndicatorView)]) {

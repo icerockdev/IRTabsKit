@@ -13,5 +13,6 @@
 
 @property IBOutlet UIView* view;
 @property IBOutlet UILabel *titleLabel;
+@property IBOutlet UIButton *titleButton;
 
 @end
