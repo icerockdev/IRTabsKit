@@ -21,9 +21,10 @@
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers {
   // remove subviews
-  while (self.subviews.count > 0) {
-    [self.subviews[0] removeFromSuperview];
+  for (NSUInteger i = 0;i < self.tabViews.count;i++) {
+    [self.tabViews[i] removeFromSuperview];
   }
+  [self.selectedIndicatorView removeFromSuperview];
 
   NSMutableArray<UIView *> *tabViews = [NSMutableArray arrayWithCapacity:viewControllers.count];
 
