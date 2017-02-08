@@ -12,7 +12,8 @@
 
 @protocol IRTabsController <NSObject>
 
+@property (nonatomic) NSUInteger selectedTab;
+
 - (void)viewDidLoad:(IRTabsViewController *)tabsViewController;
-- (void)tabSelected:(NSUInteger)tabIndex;
 
 @end

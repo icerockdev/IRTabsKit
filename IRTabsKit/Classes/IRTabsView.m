@@ -64,7 +64,7 @@
 }
 
 - (void)tabPressed:(UITapGestureRecognizer*)tapGestureRecognizer {
-  [self.tabsController tabSelected:(NSUInteger) tapGestureRecognizer.view.tag];
+  [self.tabsController setSelectedTab:(NSUInteger) tapGestureRecognizer.view.tag];
 }
 
 - (UIView *)createViewForTabWithViewController:(UIViewController *)viewController {

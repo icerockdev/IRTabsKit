@@ -53,9 +53,13 @@
   self.tabsView = tabsViewController.tabsView;
 }
 
-- (void)tabSelected:(NSUInteger)tabIndex {
-  [self.tabsContainerView setContentOffset:CGPointMake(self.tabsContainerView.bounds.size.width * tabIndex,
-          self.tabsContainerView.contentInset.top)
+- (NSUInteger)selectedTab {
+  return (NSUInteger)ceil(self.tabsContainerView.contentOffset.x / self.tabsContainerView.bounds.size.width);
+}
+
+- (void)setSelectedTab:(NSUInteger)selectedTab {
+  [self.tabsContainerView setContentOffset:CGPointMake(self.tabsContainerView.bounds.size.width * selectedTab,
+                                                       self.tabsContainerView.contentInset.top)
                                   animated:true];
 }
 
