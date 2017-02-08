@@ -66,24 +66,15 @@ double kDefaultTransitionDuration = 0.35;
   [tabsView setTabsController:self];
 }
 
-- (void)tabSelected:(NSUInteger)tabIndex {
-  [self setCurrentTab:tabIndex];
-}
-
 - (void)swipeGesture:(UISwipeGestureRecognizer *)swipeGestureRecognizer {
-  NSArray<UIViewController *> *viewControllers = self.tabsViewController.viewControllers;
-
-  if (viewControllers.count == 0) {
-    return;
-  }
-
-  NSUInteger currentIdx = [viewControllers indexOfObject:self.currentTabViewController];
+  NSUInteger currentIdx = self.selectedTab;
 
   if (currentIdx == NSNotFound) {
     // this may be in moment when transition between child controllers not done
     return;
   }
-
+  
+  NSArray<UIViewController *> *viewControllers = self.tabsViewController.viewControllers;
   switch (swipeGestureRecognizer.direction) {
     case UISwipeGestureRecognizerDirectionRight: {
       NSUInteger newIdx;
@@ -95,7 +86,7 @@ double kDefaultTransitionDuration = 0.35;
       } else {
         newIdx = currentIdx - 1;
       }
-      [self setCurrentTab:newIdx];
+      [self setSelectedTab:newIdx];
       break;
     }
     case UISwipeGestureRecognizerDirectionLeft: {
@@ -106,7 +97,7 @@ double kDefaultTransitionDuration = 0.35;
         }
         newIdx = 0;
       }
-      [self setCurrentTab:newIdx];
+      [self setSelectedTab:newIdx];
       break;
     }
     default:
@@ -114,8 +105,13 @@ double kDefaultTransitionDuration = 0.35;
   }
 }
 
-- (void)setCurrentTab:(NSUInteger)tabIdx {
-  UIViewController *pageViewController = self.tabsViewController.viewControllers[tabIdx];
+- (NSUInteger)selectedTab {
+  NSArray<UIViewController *> *viewControllers = self.tabsViewController.viewControllers;
+  return [viewControllers indexOfObject:self.currentTabViewController];
+}
+
+- (void)setSelectedTab:(NSUInteger)selectedTab {
+  UIViewController *pageViewController = self.tabsViewController.viewControllers[selectedTab];
 
   [self.currentTabViewController willMoveToParentViewController:nil];
   [self.tabsViewController addChildViewController:pageViewController];
@@ -129,7 +125,7 @@ double kDefaultTransitionDuration = 0.35;
                                                duration:[self.transitionDuration doubleValue]
                                                 options:UIViewAnimationOptionTransitionCrossDissolve
                                              animations:^() {
-                                                 [self.tabsViewController.tabsView setSelectedTab:tabIdx];
+                                                 [self.tabsViewController.tabsView setSelectedTab:selectedTab];
                                                  [self.tabsViewController.tabsView layoutIfNeeded];
                                              }
                                              completion:^(BOOL finished) {

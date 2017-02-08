@@ -21,9 +21,10 @@
 
 - (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers {
   // remove subviews
-  while (self.subviews.count > 0) {
-    [self.subviews[0] removeFromSuperview];
+  for (NSUInteger i = 0;i < self.tabViews.count;i++) {
+    [self.tabViews[i] removeFromSuperview];
   }
+  [self.selectedIndicatorView removeFromSuperview];
 
   NSMutableArray<UIView *> *tabViews = [NSMutableArray arrayWithCapacity:viewControllers.count];
 
@@ -63,7 +64,7 @@
 }
 
 - (void)tabPressed:(UITapGestureRecognizer*)tapGestureRecognizer {
-  [self.tabsController tabSelected:(NSUInteger) tapGestureRecognizer.view.tag];
+  [self.tabsController setSelectedTab:(NSUInteger) tapGestureRecognizer.view.tag];
 }
 
 - (UIView *)createViewForTabWithViewController:(UIViewController *)viewController {
@@ -73,7 +74,10 @@
                     bundle:nil] instantiateWithOwner:viewOwner
                                              options:nil];
 
-    viewOwner.titleLabel.text = [self tabTitleWithViewController:viewController];
+    NSString* title = [self tabTitleWithViewController:viewController];
+    [viewOwner.titleLabel setText:title];
+    [viewOwner.titleButton setTitle:title
+                           forState:UIControlStateNormal];
 
     return viewOwner.view;
   } else if (self.delegate != nil && [self.delegate respondsToSelector:@selector(createSelectedIndicatorView)]) {
