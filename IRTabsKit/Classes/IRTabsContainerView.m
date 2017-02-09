@@ -33,7 +33,7 @@
 
   [self setContentSize:newSize];
 
-  if(newSize.width != oldSize.width) {
+  if(self.subviews.count != 0 && oldSize.width != 0 && newSize.width != oldSize.width) {
     NSUInteger page = (NSUInteger) ceil(oldOffset.x / (oldSize.width / self.subviews.count));
     [self setContentOffset:CGPointMake(selfSize.width * page, self.contentInset.top)];
   }
