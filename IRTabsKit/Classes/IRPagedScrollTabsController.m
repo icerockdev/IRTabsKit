@@ -27,7 +27,7 @@
   tabsContainerView.bounces = false;
   tabsContainerView.pagingEnabled = true;
   tabsContainerView.canCancelContentTouches = false;
-  tabsContainerView.delegate = self;
+  tabsContainerView.scrollDelegates = [tabsContainerView.scrollDelegates arrayByAddingObject:self];
 
   // remove subviews
   while (tabsContainerView.subviews.count > 0) {
