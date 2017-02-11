@@ -11,7 +11,7 @@
 #import "IRTabsViewController.h"
 #import "IRTabsView.h"
 
-@interface IRPagedScrollTabsController() <UIScrollViewDelegate>
+@interface IRPagedScrollTabsController()
 
 @property (nonatomic, weak) IRTabsContainerView *tabsContainerView;
 @property (nonatomic, weak) IRTabsView *tabsView;
@@ -27,7 +27,11 @@
   tabsContainerView.bounces = false;
   tabsContainerView.pagingEnabled = true;
   tabsContainerView.canCancelContentTouches = false;
-  tabsContainerView.scrollDelegates = [tabsContainerView.scrollDelegates arrayByAddingObject:self];
+
+  [tabsContainerView addObserver:self
+                      forKeyPath:@"contentOffset"
+                         options:NSKeyValueObservingOptionNew
+                         context:nil];
 
   // remove subviews
   while (tabsContainerView.subviews.count > 0) {
@@ -53,6 +57,12 @@
   self.tabsView = tabsViewController.tabsView;
 }
 
+- (void) dealloc {
+  [self.tabsContainerView removeObserver:self
+                              forKeyPath:@"contentOffset"
+                                 context:nil];
+}
+
 - (NSUInteger)selectedTab {
   return (NSUInteger)ceil(self.tabsContainerView.contentOffset.x / self.tabsContainerView.bounds.size.width);
 }
@@ -63,9 +73,12 @@
                                   animated:true];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-  CGPoint offset = scrollView.contentOffset;
-  CGSize size = scrollView.bounds.size;
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)change
+                       context:(void *)context {
+  CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
+  CGSize size = self.tabsContainerView.bounds.size;
 
   [self.tabsView setSelectedIndicatorPosition:(offset.x / size.width)];
 }
