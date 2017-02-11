@@ -58,5 +58,8 @@
   }
 }
 
+- (void)setContentInset:(UIEdgeInsets)contentInset {
+  [super setContentInset:UIEdgeInsetsZero];
+}
 
 @end
