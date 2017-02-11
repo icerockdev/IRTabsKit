@@ -7,101 +7,8 @@
 //
 
 #import "IRTabsView.h"
-#import "IRTabViewOwner.h"
-#import "IRSelectedIndicatorViewOwner.h"
-#import "IRTabsController.h"
-
-@interface IRTabsView ()
-
-@property(nonatomic, weak) UIView *selectedIndicatorView;
-
-@end
 
 @implementation IRTabsView
-
-- (void)populateWithViewControllers:(NSArray<UIViewController *> *)viewControllers {
-  // remove subviews
-  for (NSUInteger i = 0;i < self.tabViews.count;i++) {
-    [self.tabViews[i] removeFromSuperview];
-  }
-  [self.selectedIndicatorView removeFromSuperview];
-
-  NSMutableArray<UIView *> *tabViews = [NSMutableArray arrayWithCapacity:viewControllers.count];
-
-  for (NSUInteger i = 0; i < viewControllers.count; i++) {
-    UIView *view = [self createViewForTabWithViewController:viewControllers[i]];
-    view.tag = i;
-
-    UITapGestureRecognizer *tapGestureRecognizer =
-        [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                action:@selector(tabPressed:)];
-    [view addGestureRecognizer:tapGestureRecognizer];
-
-    tabViews[i] = view;
-
-    [self addSubview:view];
-  }
-
-  _tabViews = [NSArray arrayWithArray:tabViews];
-
-  if (self.selectedIndicatorView == nil) {
-    if (self.selectedIndicatorNibFile != nil) {
-      IRSelectedIndicatorViewOwner *viewOwner = [IRSelectedIndicatorViewOwner new];
-      [[UINib nibWithNibName:self.selectedIndicatorNibFile
-                      bundle:nil] instantiateWithOwner:viewOwner
-                                               options:nil];
-
-      self.selectedIndicatorView = viewOwner.view;
-    } if(self.delegate != nil &&
-        [self.delegate respondsToSelector:@selector(createSelectedIndicatorView)]) {
-      self.selectedIndicatorView = [self.delegate createSelectedIndicatorView];
-    }
-  }
-
-  if (self.selectedIndicatorView != nil) {
-    [self addSubview:self.selectedIndicatorView];
-  }
-}
-
-- (void)tabPressed:(UITapGestureRecognizer*)tapGestureRecognizer {
-  [self.tabsController setSelectedTab:(NSUInteger) tapGestureRecognizer.view.tag];
-}
-
-- (UIView *)createViewForTabWithViewController:(UIViewController *)viewController {
-  if (self.tabNibFile != nil) {
-    IRTabViewOwner *viewOwner = [IRTabViewOwner new];
-    [[UINib nibWithNibName:self.tabNibFile
-                    bundle:nil] instantiateWithOwner:viewOwner
-                                             options:nil];
-
-    NSString* title = [self tabTitleWithViewController:viewController];
-    [viewOwner.titleLabel setText:title];
-    [viewOwner.titleButton setTitle:title
-                           forState:UIControlStateNormal];
-
-    return viewOwner.view;
-  } else if (self.delegate != nil && [self.delegate respondsToSelector:@selector(createSelectedIndicatorView)]) {
-    UIView *view = [self.delegate createTabViewWithViewController:viewController];
-    return view;
-  } else {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setTitle:[self tabTitleWithViewController:viewController]
-            forState:UIControlStateNormal];
-    return button;
-  }
-}
-
-- (NSString *)tabTitleWithViewController:(UIViewController *)viewController {
-  return viewController.title;
-}
-
-- (void)setSelectedTab:(NSUInteger)selectedTab {
-  [self setSelectedIndicatorPosition:selectedTab];
-}
-
-- (NSUInteger)selectedTab {
-  return (NSUInteger) ceil(self.selectedIndicatorPosition);
-}
 
 - (void)setSelectedIndicatorPosition:(CGFloat)selectedIndicatorPosition {
   _selectedIndicatorPosition = selectedIndicatorPosition;
@@ -121,8 +28,29 @@
         tabSize.width, tabSize.height)];
   }
 
-  [self.selectedIndicatorView setFrame:CGRectMake(tabSize.width * self.selectedIndicatorPosition, 0,
+  [self.selectedTabIndicatorView setFrame:CGRectMake(tabSize.width * self.selectedIndicatorPosition, 0,
       tabSize.width, tabSize.height)];
 }
 
+- (void)setTabViews:(NSArray<UIView *> *)tabViews {
+  if(_tabViews != nil) {
+    for(NSUInteger i = 0;i < _tabViews.count;i++) {
+      [_tabViews[i] removeFromSuperview];
+    }
+  }
+  if(tabViews != nil) {
+    for(NSUInteger i = 0;i < tabViews.count;i++) {
+      [self addSubview:tabViews[i]];
+    }
+  }
+
+  _tabViews = tabViews;
+}
+
+- (void)setSelectedTabIndicatorView:(UIView *)selectedTabIndicatorView {
+  [_selectedTabIndicatorView removeFromSuperview];
+  [self addSubview:selectedTabIndicatorView];
+
+  _selectedTabIndicatorView = selectedTabIndicatorView;
+}
 @end

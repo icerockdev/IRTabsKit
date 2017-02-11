@@ -10,66 +10,80 @@
 #import "IRTabsContainerView.h"
 #import "IRTabsViewController.h"
 #import "IRTabsView.h"
+#import "IRTabsDataSource.h"
 
-@interface IRPagedScrollTabsController()
-
-@property (nonatomic, weak) IRTabsContainerView *tabsContainerView;
-@property (nonatomic, weak) IRTabsView *tabsView;
+@interface IRPagedScrollTabsController () {
+  IRTabsContainerView *_tabsContainerView;
+}
 
 @end
 
 @implementation IRPagedScrollTabsController
 
 - (void)viewDidLoad:(IRTabsViewController *)tabsViewController {
-  IRTabsContainerView *tabsContainerView = tabsViewController.tabsContainerView;
-  NSArray<UIViewController *> *viewControllers = tabsViewController.viewControllers;
+  [super viewDidLoad:tabsViewController];
 
-  tabsContainerView.bounces = false;
-  tabsContainerView.pagingEnabled = true;
-  tabsContainerView.canCancelContentTouches = false;
+  self.tabsContainerView.bounces = false;
+  self.tabsContainerView.pagingEnabled = true;
+  self.tabsContainerView.canCancelContentTouches = false;
 
-  [tabsContainerView addObserver:self
-                      forKeyPath:@"contentOffset"
-                         options:NSKeyValueObservingOptionNew
-                         context:nil];
+  [self.tabsContainerView addObserver:self
+                           forKeyPath:@"contentOffset"
+                              options:NSKeyValueObservingOptionNew
+                              context:nil];
 
-  // remove subviews
-  while (tabsContainerView.subviews.count > 0) {
-    [tabsContainerView.subviews[0] removeFromSuperview];
-  }
+  _tabsContainerView = self.tabsContainerView;
 
-  // add pages
-  for (NSUInteger i = 0; i < viewControllers.count;i++) {
-    UIViewController *viewController = viewControllers[i];
-    UIView* view = viewController.view;
-
-    [tabsViewController addChildViewController:viewController];
-
-    [tabsContainerView addSubview:view];
-
-    [viewController didMoveToParentViewController:tabsViewController];
-  }
-
-  [tabsViewController.tabsView populateWithViewControllers:viewControllers];
-  [tabsViewController.tabsView setTabsController:self];
-
-  self.tabsContainerView = tabsContainerView;
-  self.tabsView = tabsViewController.tabsView;
+  [self reloadData];
 }
 
-- (void) dealloc {
-  [self.tabsContainerView removeObserver:self
-                              forKeyPath:@"contentOffset"
-                                 context:nil];
+- (void)dealloc {
+  [_tabsContainerView removeObserver:self
+                             forKeyPath:@"contentOffset"];
+}
+
+- (void)reloadData {
+  IRTabsViewController *tabsViewController = self.tabsViewController;
+  IRTabsContainerView *containerView = tabsViewController.tabsContainerView;
+  id <IRTabsDataSource> dataSource = self.tabsDataSource;
+
+  // remove subviews
+  containerView.tabContentViews = nil;
+
+  if (dataSource != nil) {
+    NSUInteger count = [dataSource numberOfTabsInTabsController:self];
+
+    NSMutableArray *tabContentViews = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = 0; i < count; i++) {
+      if ([dataSource respondsToSelector:@selector(tabsController:viewWillAppendAtIndex:withTabsViewController:)]) {
+        [dataSource tabsController:self
+             viewWillAppendAtIndex:i
+            withTabsViewController:tabsViewController];
+      }
+
+      tabContentViews[i] = [dataSource tabsController:self viewAtIndex:i];
+
+      if ([dataSource respondsToSelector:@selector(tabsController:viewDidAppendAtIndex:withTabsViewController:)]) {
+        [dataSource tabsController:self
+              viewDidAppendAtIndex:i
+            withTabsViewController:tabsViewController];
+      }
+    }
+
+    containerView.tabContentViews = [NSArray arrayWithArray:tabContentViews];
+  }
+
+  [super reloadData];
 }
 
 - (NSUInteger)selectedTab {
-  return (NSUInteger)ceil(self.tabsContainerView.contentOffset.x / self.tabsContainerView.bounds.size.width);
+  return (NSUInteger) ceil(self.tabsContainerView.contentOffset.x / self.tabsContainerView.bounds.size.width);
 }
 
 - (void)setSelectedTab:(NSUInteger)selectedTab {
-  [self.tabsContainerView setContentOffset:CGPointMake(self.tabsContainerView.bounds.size.width * selectedTab,
-                                                       self.tabsContainerView.contentInset.top)
+  [self.tabsContainerView setContentOffset:CGPointMake(
+          self.tabsContainerView.bounds.size.width * selectedTab,
+          self.tabsContainerView.contentInset.top)
                                   animated:true];
 }
 

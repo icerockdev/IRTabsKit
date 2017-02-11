@@ -10,15 +10,9 @@
 #import "IRTabsViewController.h"
 #import "IRTabsContainerView.h"
 #import "IRTabsView.h"
+#import "IRTabsDataSource.h"
 
 double kDefaultTransitionDuration = 0.35;
-
-@interface IRSwipeTabsController ()
-
-@property(weak) IRTabsViewController *tabsViewController;
-@property UIViewController *currentTabViewController;
-
-@end
 
 @implementation IRSwipeTabsController
 
@@ -32,7 +26,7 @@ double kDefaultTransitionDuration = 0.35;
 }
 
 - (void)viewDidLoad:(IRTabsViewController *)tabsViewController {
-  self.tabsViewController = tabsViewController;
+  [super viewDidLoad:tabsViewController];
 
   IRTabsContainerView *tabsContainerView = tabsViewController.tabsContainerView;
 
@@ -45,25 +39,29 @@ double kDefaultTransitionDuration = 0.35;
   [self addSwipeGestureRecognizerWithDirection:UISwipeGestureRecognizerDirectionLeft
                                         toView:tabsContainerView];
 
-  if (tabsViewController.viewControllers.count > 0) {
-    UIViewController *pageViewController = tabsViewController.viewControllers[0];
+  [self reloadData];
+}
 
-    [tabsViewController addChildViewController:pageViewController];
+- (void)reloadData {
+  id <IRTabsDataSource> dataSource = self.tabsDataSource;
 
-    UIView *pageView = pageViewController.view;
-    pageView.frame = tabsContainerView.bounds;
+  if (dataSource != nil) {
+    NSUInteger count = [dataSource numberOfTabsInTabsController:self];
 
-    [tabsContainerView addSubview:pageView];
+    NSMutableArray *tabContentViews = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = 0; i < count; i++) {
+      tabContentViews[i] = [dataSource tabsController:self viewAtIndex:i];
+      [tabContentViews[i] setHidden:true];
+    }
 
-    [pageViewController didMoveToParentViewController:tabsViewController];
+    self.tabsContainerView.tabContentViews = [NSArray arrayWithArray:tabContentViews];
 
-    self.currentTabViewController = pageViewController;
+    if (count > 0) {
+      [self setSelectedTab:0];
+    }
   }
 
-  IRTabsView *tabsView = tabsViewController.tabsView;
-
-  [tabsView populateWithViewControllers:tabsViewController.viewControllers];
-  [tabsView setTabsController:self];
+  [super reloadData];
 }
 
 - (void)swipeGesture:(UISwipeGestureRecognizer *)swipeGestureRecognizer {
@@ -73,16 +71,18 @@ double kDefaultTransitionDuration = 0.35;
     // this may be in moment when transition between child controllers not done
     return;
   }
-  
-  NSArray<UIViewController *> *viewControllers = self.tabsViewController.viewControllers;
+
+  id <IRTabsDataSource> dataSource = self.tabsDataSource;
+  NSUInteger count = [dataSource numberOfTabsInTabsController:self];
+
   switch (swipeGestureRecognizer.direction) {
     case UISwipeGestureRecognizerDirectionRight: {
       NSUInteger newIdx;
       if (currentIdx == 0) {
-        if(!self.infinite.boolValue) {
+        if (!self.infinite.boolValue) {
           break;
         }
-        newIdx = viewControllers.count - 1;
+        newIdx = count - 1;
       } else {
         newIdx = currentIdx - 1;
       }
@@ -91,8 +91,8 @@ double kDefaultTransitionDuration = 0.35;
     }
     case UISwipeGestureRecognizerDirectionLeft: {
       NSUInteger newIdx = currentIdx + 1;
-      if (newIdx == viewControllers.count) {
-        if(!self.infinite.boolValue) {
+      if (newIdx == count) {
+        if (!self.infinite.boolValue) {
           break;
         }
         newIdx = 0;
@@ -105,35 +105,69 @@ double kDefaultTransitionDuration = 0.35;
   }
 }
 
-- (NSUInteger)selectedTab {
-  NSArray<UIViewController *> *viewControllers = self.tabsViewController.viewControllers;
-  return [viewControllers indexOfObject:self.currentTabViewController];
-}
-
 - (void)setSelectedTab:(NSUInteger)selectedTab {
-  UIViewController *pageViewController = self.tabsViewController.viewControllers[selectedTab];
+  NSUInteger oldSelectedTab = self.selectedTab;
 
-  [self.currentTabViewController willMoveToParentViewController:nil];
-  [self.tabsViewController addChildViewController:pageViewController];
+  IRTabsViewController *tabsViewController = self.tabsViewController;
+  IRTabsContainerView *containerView = self.tabsContainerView;
+  IRTabsView *tabsView = self.tabsView;
+  id <IRTabsDataSource> dataSource = self.tabsDataSource;
 
-  UIView *tabsContainerView = self.tabsViewController.tabsContainerView;
-  UIView *pageView = pageViewController.view;
-  pageView.frame = tabsContainerView.bounds;
+  if (oldSelectedTab != NSNotFound &&
+      [dataSource respondsToSelector:@selector(tabsController:viewWillRemovedAtIndex:withTabsViewController:)]) {
+    [dataSource tabsController:self
+         viewDidRemovedAtIndex:oldSelectedTab
+        withTabsViewController:tabsViewController];
+  }
+  if ([dataSource respondsToSelector:@selector(tabsController:viewWillAppendAtIndex:withTabsViewController:)]) {
+    [dataSource tabsController:self
+         viewWillAppendAtIndex:selectedTab
+        withTabsViewController:tabsViewController];
+  }
 
-  [self.tabsViewController transitionFromViewController:self.currentTabViewController
-                                       toViewController:pageViewController
-                                               duration:[self.transitionDuration doubleValue]
-                                                options:UIViewAnimationOptionTransitionCrossDissolve
-                                             animations:^() {
-                                                 [self.tabsViewController.tabsView setSelectedTab:selectedTab];
-                                                 [self.tabsViewController.tabsView layoutIfNeeded];
-                                             }
-                                             completion:^(BOOL finished) {
-                                                 [self.currentTabViewController removeFromParentViewController];
-                                                 [pageViewController didMoveToParentViewController:self.tabsViewController];
+  UIView* tabContentView = containerView.tabContentViews[selectedTab];
+  tabContentView.hidden = false;
+  [containerView layoutIfNeeded];
+  tabContentView.frame = containerView.bounds;
 
-                                                 self.currentTabViewController = pageViewController;
-                                             }];
+  if(oldSelectedTab != NSNotFound) {
+    UIView* oldTabContentView = containerView.tabContentViews[oldSelectedTab];
+    oldTabContentView.frame = containerView.bounds;
+    tabContentView.alpha = 0.0f;
+
+    [UIView animateWithDuration:[self.transitionDuration doubleValue]
+                     animations:^{
+                         [tabsView setSelectedIndicatorPosition:selectedTab];
+                         [tabsView layoutIfNeeded];
+
+                         tabContentView.alpha = 1.0f;
+                         oldTabContentView.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         oldTabContentView.hidden = true;
+
+                         if ([dataSource respondsToSelector:@selector(tabsController:viewDidAppendAtIndex:withTabsViewController:)]) {
+                           [dataSource tabsController:self
+                                 viewDidAppendAtIndex:selectedTab
+                               withTabsViewController:tabsViewController];
+                         }
+                         if ([dataSource respondsToSelector:@selector(tabsController:viewDidRemovedAtIndex:withTabsViewController:)]) {
+                           [dataSource tabsController:self
+                                viewDidRemovedAtIndex:oldSelectedTab
+                               withTabsViewController:tabsViewController];
+                         }
+
+                         [super setSelectedTab:selectedTab];
+                     }];
+  } else {
+    if ([dataSource respondsToSelector:@selector(tabsController:viewDidAppendAtIndex:withTabsViewController:)]) {
+      [dataSource tabsController:self
+            viewDidAppendAtIndex:selectedTab
+          withTabsViewController:tabsViewController];
+    }
+
+    [super setSelectedTab:selectedTab];
+  }
 }
 
 - (void)addSwipeGestureRecognizerWithDirection:(UISwipeGestureRecognizerDirection)direction

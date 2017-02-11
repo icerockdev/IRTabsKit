@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "IRTabsController.h"
+#import "IRBaseTabsController.h"
 
-@interface IRPagedScrollTabsController : NSObject<IRTabsController>
+@interface IRPagedScrollTabsController : IRBaseTabsController
 
 @end

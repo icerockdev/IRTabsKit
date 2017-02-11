@@ -10,4 +10,6 @@
 
 @interface IRTabsContainerView : UIScrollView
 
+@property(nonatomic, nullable) NSArray<UIView *> *tabContentViews;
+
 @end

@@ -39,8 +39,19 @@
   self.showsHorizontalScrollIndicator = false;
 }
 
+- (void)dealloc {
+  self.tabContentViews = nil;
+}
+
 - (void)layoutSubviews {
-  NSUInteger pagesCount = self.subviews.count;
+  NSUInteger pagesCount = 0;
+  for(NSUInteger i = 0;i < self.tabContentViews.count;i++) {
+    if(self.tabContentViews[i].hidden) {
+      continue;
+    }
+    pagesCount++;
+  }
+
   CGSize selfSize = self.bounds.size;
   CGSize newSize = CGSizeMake(selfSize.width * pagesCount, selfSize.height);
   CGSize oldSize = self.contentSize;
@@ -48,18 +59,64 @@
 
   [self setContentSize:newSize];
 
-  if(self.subviews.count != 0 && oldSize.width != 0 && newSize.width != oldSize.width) {
-    NSUInteger page = (NSUInteger) ceil(oldOffset.x / (oldSize.width / self.subviews.count));
+  if(pagesCount != 0 && oldSize.width != 0 && newSize.width != oldSize.width) {
+    NSUInteger page = (NSUInteger) ceil(oldOffset.x / (oldSize.width / pagesCount));
     [self setContentOffset:CGPointMake(selfSize.width * page, self.contentInset.top)];
   }
 
-  for(NSUInteger i = 0;i < pagesCount;i++) {
-    [self.subviews[i] setFrame:CGRectMake(selfSize.width * i, 0.0f, selfSize.width, selfSize.height)];
+  NSInteger pageIdx = 0;
+  for(NSUInteger i = 0;i < self.tabContentViews.count;i++) {
+    UIView* view = self.tabContentViews[i];
+    if(view.hidden) {
+      continue;
+    }
+    [view setFrame:CGRectMake(selfSize.width * pageIdx, 0.0f, selfSize.width, selfSize.height)];
+    pageIdx++;
   }
 }
 
 - (void)setContentInset:(UIEdgeInsets)contentInset {
   [super setContentInset:UIEdgeInsetsZero];
+}
+
+- (void)setTabContentViews:(NSArray<UIView *> *)tabContentViews {
+  if(_tabContentViews != nil) {
+    for(NSUInteger i = 0;i < _tabContentViews.count;i++) {
+      UIView* view = _tabContentViews[i];
+      [view removeObserver:self
+                forKeyPath:@"hidden"
+                   context:nil];
+      [view removeFromSuperview];
+    }
+  }
+  if(tabContentViews != nil) {
+    for(NSUInteger i = 0;i < tabContentViews.count;i++) {
+      UIView* view = tabContentViews[i];
+      [view addObserver:self
+             forKeyPath:@"hidden"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
+      if(!view.hidden) {
+        [self addSubview:view];
+      }
+    }
+  }
+  _tabContentViews = tabContentViews;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)change
+                       context:(void *)context {
+  if([object isKindOfClass:[UIView class]]) {
+    UIView* view = (UIView*)object;
+    if(view.hidden) {
+      [view removeFromSuperview];
+    } else {
+      // not sort by page number for now
+      [self addSubview:view];
+    }
+  }
 }
 
 @end
