@@ -7,6 +7,7 @@
 //
 
 #import "IRTabsView.h"
+#import "IRTabView.h"
 
 @implementation IRTabsView
 
@@ -20,12 +21,18 @@
   NSArray<UIView*>* tabViews = self.tabViews;
   CGSize selfSize = self.bounds.size;
   CGSize tabSize = CGSizeMake(selfSize.width / tabViews.count, selfSize.height);
+  NSUInteger selectedTab = (NSUInteger) round(self.selectedIndicatorPosition);
 
   for(NSUInteger i = 0;i < tabViews.count;i++) {
-    UIView* tabView = tabViews[i];
+    UIView* view = tabViews[i];
 
-    [tabView setFrame:CGRectMake(tabSize.width * i, 0,
+    [view setFrame:CGRectMake(tabSize.width * i, 0,
         tabSize.width, tabSize.height)];
+
+    if([view isKindOfClass:[IRTabView class]]) {
+      IRTabView *tabView = (IRTabView *)view;
+      tabView.selected = (i == selectedTab);
+    }
   }
 
   [self.selectedTabIndicatorView setFrame:CGRectMake(tabSize.width * self.selectedIndicatorPosition, 0,

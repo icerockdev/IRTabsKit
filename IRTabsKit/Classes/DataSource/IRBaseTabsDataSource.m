@@ -8,6 +8,7 @@
 
 #import "IRBaseTabsDataSource.h"
 #import "IRSimpleViewOwner.h"
+#import "IRTabView.h"
 
 @implementation IRBaseTabsDataSource
 
@@ -30,9 +31,21 @@
                     bundle:nil] instantiateWithOwner:viewOwner
                                              options:nil];
 
-    // TITLE
+    UIView* view = viewOwner.view;
 
-    return viewOwner.view;
+    if(view == nil) {
+      [[NSException exceptionWithName:NSInvalidArgumentException
+                               reason:@"view owner in xib not have linked view outlet"
+                             userInfo:nil] raise];
+    }
+
+    if([view isKindOfClass:[IRTabView class]]) {
+      IRTabView* tabView = (IRTabView *)view;
+
+      tabView.title = title;
+    }
+
+    return view;
   } else {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:title
