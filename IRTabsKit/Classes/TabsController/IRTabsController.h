@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @class IRTabsViewController;
+@protocol IRTabsDataSource;
 
 @protocol IRTabsController <NSObject>
 
-@property (nonatomic) NSUInteger selectedTab;
+@property (nonatomic, readwrite) NSUInteger selectedTab;
 
 - (void)viewDidLoad:(IRTabsViewController *)tabsViewController;
+- (void)reloadData;
 
 @end

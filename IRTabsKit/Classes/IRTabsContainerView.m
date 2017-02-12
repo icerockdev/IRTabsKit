@@ -8,18 +8,6 @@
 
 #import "IRTabsContainerView.h"
 
-#define FOREACH_SCROLL_DELEGATES(code) if(self.scrollDelegates != nil) { \
-  for(NSUInteger i = 0;i < self.scrollDelegates.count;i++) { \
-    if([self.scrollDelegates[i] respondsToSelector:_cmd]) { \
-      [self.scrollDelegates[i] code]; \
-    } \
-  } \
-}
-
-@interface IRTabsContainerView()<UIScrollViewDelegate>
-
-@end
-
 @implementation IRTabsContainerView
 
 - (instancetype)init {
@@ -47,15 +35,23 @@
 }
 
 - (void)commonInit {
-  [super setDelegate:self];
-  
-  self.scrollDelegates = [NSArray array];
   self.showsVerticalScrollIndicator = false;
   self.showsHorizontalScrollIndicator = false;
 }
 
+- (void)dealloc {
+  self.tabContentViews = nil;
+}
+
 - (void)layoutSubviews {
-  NSUInteger pagesCount = self.subviews.count;
+  NSUInteger pagesCount = 0;
+  for(NSUInteger i = 0;i < self.tabContentViews.count;i++) {
+    if(self.tabContentViews[i].hidden) {
+      continue;
+    }
+    pagesCount++;
+  }
+
   CGSize selfSize = self.bounds.size;
   CGSize newSize = CGSizeMake(selfSize.width * pagesCount, selfSize.height);
   CGSize oldSize = self.contentSize;
@@ -63,58 +59,64 @@
 
   [self setContentSize:newSize];
 
-  if(self.subviews.count != 0 && oldSize.width != 0 && newSize.width != oldSize.width) {
-    NSUInteger page = (NSUInteger) ceil(oldOffset.x / (oldSize.width / self.subviews.count));
+  if(pagesCount != 0 && oldSize.width != 0 && newSize.width != oldSize.width) {
+    NSUInteger page = (NSUInteger) ceil(oldOffset.x / (oldSize.width / pagesCount));
     [self setContentOffset:CGPointMake(selfSize.width * page, self.contentInset.top)];
   }
 
-  for(NSUInteger i = 0;i < pagesCount;i++) {
-    [self.subviews[i] setFrame:CGRectMake(selfSize.width * i, 0.0f, selfSize.width, selfSize.height)];
+  NSInteger pageIdx = 0;
+  for(NSUInteger i = 0;i < self.tabContentViews.count;i++) {
+    UIView* view = self.tabContentViews[i];
+    if(view.hidden) {
+      continue;
+    }
+    [view setFrame:CGRectMake(selfSize.width * pageIdx, 0.0f, selfSize.width, selfSize.height)];
+    pageIdx++;
   }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidScroll:scrollView)
+- (void)setContentInset:(UIEdgeInsets)contentInset {
+  [super setContentInset:UIEdgeInsetsZero];
 }
 
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidZoom:scrollView)
+- (void)setTabContentViews:(NSArray<UIView *> *)tabContentViews {
+  if(_tabContentViews != nil) {
+    for(NSUInteger i = 0;i < _tabContentViews.count;i++) {
+      UIView* view = _tabContentViews[i];
+      [view removeObserver:self
+                forKeyPath:@"hidden"
+                   context:nil];
+      [view removeFromSuperview];
+    }
+  }
+  if(tabContentViews != nil) {
+    for(NSUInteger i = 0;i < tabContentViews.count;i++) {
+      UIView* view = tabContentViews[i];
+      [view addObserver:self
+             forKeyPath:@"hidden"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
+      if(!view.hidden) {
+        [self addSubview:view];
+      }
+    }
+  }
+  _tabContentViews = tabContentViews;
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewWillBeginDragging:scrollView)
-}
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-  FOREACH_SCROLL_DELEGATES(scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset)
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidEndDragging:scrollView willDecelerate:decelerate)
-}
-
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewWillBeginDecelerating:scrollView)
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidEndDecelerating:scrollView)
-}
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidEndScrollingAnimation:scrollView)
-}
-
-- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view {
-  FOREACH_SCROLL_DELEGATES(scrollViewWillBeginZooming:scrollView withView:view)
-}
-
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidEndZooming:scrollView withView:view atScale:scale)
-}
-
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView {
-  FOREACH_SCROLL_DELEGATES(scrollViewDidScrollToTop:scrollView)
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)change
+                       context:(void *)context {
+  if([object isKindOfClass:[UIView class]]) {
+    UIView* view = (UIView*)object;
+    if(view.hidden) {
+      [view removeFromSuperview];
+    } else {
+      // not sort by page number for now
+      [self addSubview:view];
+    }
+  }
 }
 
 @end

@@ -9,10 +9,7 @@
 #import "IRTabsViewController.h"
 #import "IRTabsController.h"
 #import "IRSwipeTabsController.h"
-
-@interface IRTabsViewController ()
-
-@end
+#import "IRTabsDataSource.h"
 
 @implementation IRTabsViewController
 
@@ -43,13 +40,6 @@
   [super viewDidLoad];
 
   [self.tabsController viewDidLoad:self];
-}
-
-- (void)addTabViewController:(UIViewController *)viewController {
-  NSMutableArray<UIViewController *> *updatedViewControllers = [NSMutableArray arrayWithArray:self.viewControllers];
-  [updatedViewControllers addObject:viewController];
-
-  self.viewControllers = [NSArray arrayWithArray:updatedViewControllers];
 }
 
 @end

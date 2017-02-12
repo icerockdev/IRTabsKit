@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "IRTabsController.h"
+#import "IRBaseTabsController.h"
 
 IB_DESIGNABLE
-@interface IRSwipeTabsController : NSObject <IRTabsController>
+@interface IRSwipeTabsController : IRBaseTabsController
 
 @property IBInspectable NSNumber *transitionDuration;
 @property IBInspectable NSNumber *infinite;

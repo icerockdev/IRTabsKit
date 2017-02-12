@@ -24,6 +24,8 @@
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		99D2C4BC07F75A7F06A95705 /* Pods_IRTabsKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19305DFA0222A249FF6FC6FD /* Pods_IRTabsKit_Example.framework */; };
 		A451094FEE1C56A102E3E9E0 /* Pods_IRTabsKit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4536DFE8EB5E9FE6D22697 /* Pods_IRTabsKit_Tests.framework */; };
+		D368E1E21E50A82A004B5FF0 /* LabelTabView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D368E1E11E50A82A004B5FF0 /* LabelTabView.xib */; };
+		D368E1E41E50A8CA004B5FF0 /* ButtonTabView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D368E1E31E50A8CA004B5FF0 /* ButtonTabView.xib */; };
 		D3EE97861E45D696009B3382 /* IRHomeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */; };
 		D3FC31881E49902B0066707A /* SelectedIndicatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3FC31871E49902B0066707A /* SelectedIndicatorView.xib */; };
 /* End PBXBuildFile section */
@@ -67,6 +69,8 @@
 		94AC77A1AF41E5AFD00935FE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		9C0F3EAD115AE622F5F51973 /* Pods-IRTabsKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Tests/Pods-IRTabsKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		C3360BFD51F44A4D0A3CF68D /* Pods-IRTabsKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IRTabsKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-IRTabsKit_Example/Pods-IRTabsKit_Example.release.xcconfig"; sourceTree = "<group>"; };
+		D368E1E11E50A82A004B5FF0 /* LabelTabView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabelTabView.xib; sourceTree = "<group>"; };
+		D368E1E31E50A8CA004B5FF0 /* ButtonTabView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ButtonTabView.xib; sourceTree = "<group>"; };
 		D3EE97841E45D696009B3382 /* IRHomeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRHomeTableViewController.h; sourceTree = "<group>"; };
 		D3EE97851E45D696009B3382 /* IRHomeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRHomeTableViewController.m; sourceTree = "<group>"; };
 		D3FC31871E49902B0066707A /* SelectedIndicatorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectedIndicatorView.xib; sourceTree = "<group>"; };
@@ -148,6 +152,8 @@
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F594195388D20070C39A /* Supporting Files */,
 				D3FC31871E49902B0066707A /* SelectedIndicatorView.xib */,
+				D368E1E11E50A82A004B5FF0 /* LabelTabView.xib */,
+				D368E1E31E50A8CA004B5FF0 /* ButtonTabView.xib */,
 			);
 			name = "Example for IRTabsKit";
 			path = IRTabsKit;
@@ -291,8 +297,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
+				D368E1E41E50A8CA004B5FF0 /* ButtonTabView.xib in Resources */,
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				D368E1E21E50A82A004B5FF0 /* LabelTabView.xib in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 				D3FC31881E49902B0066707A /* SelectedIndicatorView.xib in Resources */,
 			);

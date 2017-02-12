@@ -10,7 +10,6 @@
 
 @interface IRTabsContainerView : UIScrollView
 
-@property(nullable,nonatomic,weak) id<UIScrollViewDelegate> delegate UNAVAILABLE_ATTRIBUTE;
-@property IBOutletCollection(NSObject<UIScrollViewDelegate>) NSArray<NSObject<UIScrollViewDelegate>*>* scrollDelegates;
+@property(nonatomic, nullable) NSArray<UIView *> *tabContentViews;
 
 @end

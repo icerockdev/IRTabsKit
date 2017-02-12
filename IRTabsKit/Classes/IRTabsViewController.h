@@ -12,15 +12,13 @@
 @class IRTabsContainerView;
 
 @protocol IRTabsController;
+@protocol IRTabsDataSource;
 
 @interface IRTabsViewController : UIViewController
-
-@property (nonatomic) NSArray<UIViewController*>* viewControllers;
 
 @property (nonatomic, weak) IBOutlet IRTabsView* tabsView;
 @property (nonatomic, weak) IBOutlet IRTabsContainerView* tabsContainerView;
 @property (nonatomic, strong) IBOutlet id<IRTabsController> tabsController;
-
-- (void)addTabViewController:(UIViewController *)viewController;
+@property (nonatomic, strong) IBOutlet id<IRTabsDataSource> tabsDataSource;
 
 @end
